@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Electronics Page</title>
+</head>
+
+<body>
+    <h1>Hello, globomantics e-commerce stroe front</h1>
+    <table class="table table-bordered">
+        <thread>
+            <tr>
+                <th>Item</th>
+            </tr>
+        </thread>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table>
+        {% if is_paginated %}
+        <tr class="pagination">
+            {% if page_obj.has_previous %}
+            <td>
+                <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
+            </td>
+            {% endif %}
+            <td class="">
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+            </td>
+            {% if page_obj.has_next %}
+            <td>
+                <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+            </td>
+            {% endif %}
+        </tr>
+        {% endif %}
+    </table>
+</body>
+
+</html>
