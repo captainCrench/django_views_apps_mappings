@@ -14,19 +14,39 @@ def index(request):
 def detail(request):
     return HttpResponse("Hello details")
 
+def logout(request):
+    try:
+        del request.session['customer']
+    except KeyError:
+        print("Error while logging out")
+    return HttpResponse("You're logged out.")
+
 @csrf_exempt
-@cache_page(900)
 @require_http_methods(["GET"])
 def electronics(request):
     items = ("Windows PC", "Apple Mac", "Apple iPhone")
     if request.method == "GET":
         paginator = Paginator(items, 2)
         pages = request.GET.get('page', 1)
+        name = "Brandon"
         try:
             items = paginator.page(pages)
         except PageNotAnInteger:
             items = paginator.page(1)
-        return render(request, 'store/list.html', {'items': items})
+        if not request.session.has_key('customer'):
+            request.session['customer'] = name
+            print("Session value set")
+        response = render(request, 'store/list.html', {'items': items})
+        if request.COOKIES.get('visits'):
+            value = int(request.COOKIES.get('visits'))
+            print("Getting Cookie.")
+            value += 1
+            response.set_cookie('visits', value)
+        else:
+            value = 1
+            print("Setting Cookie.")
+            response.set_cookie('visits', value)
+        return response
     elif request.method == "POST":
         return HttpResponseNotFound("Page Not Found")
 
